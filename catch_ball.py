@@ -20,7 +20,7 @@ def new_ball():
     #параметры нового шарика
     x = randint(100, 1100)
     y = randint(100, 800)
-    r = randint(10, 100)
+    r = randint(35, 100)
     color = COLORS[randint(0, 5)]
     dx = randint(-8, 8)
     dy = randint(-8, 8)
@@ -57,6 +57,9 @@ finished = False
 balls = [new_ball() for _ in range(5)]
 points = 0
 time = 0
+rules_text = "Click balls for higher score: Fast/Small ball=>More, Miss=-1, -1 each second"
+rules_font = pygame.font.Font(None, 36)
+
 while not finished:
     clock.tick(FPS)
     
@@ -71,7 +74,7 @@ while not finished:
                     b=1
                     balls.remove(ball)
                     balls.append(new_ball())
-                    if ball[3] < 30:
+                    if ball[3] < 55:
                         if ball[4]<-6 or ball[4]>6 or ball[5]<-6 or ball[5]>6:
                             points+=4
                         else:
@@ -82,11 +85,11 @@ while not finished:
                         else:
                             points+=1
             if b==0:
-                points-=2
+                points-=1
             else:
                 b=0
     time+=1
-    if time==50:
+    if time==60:
         time=0
         points-=1
                     
@@ -96,6 +99,8 @@ while not finished:
         move_ball(ball)
 
     screen.fill(BLACK)
+    rules_surface = rules_font.render(rules_text, True, 'WHITE')
+    screen.blit(rules_surface, (20, 20))
     if points<0:
         text_surface = font.render(str(points), True, 'RED')
     else:
@@ -104,7 +109,12 @@ while not finished:
 
     for ball in balls:
         draw_ball(ball)
-
+    if points >= 30:
+        win_surface = font.render('you win!', True, 'YELLOW')
+        screen.blit(win_surface, (500, 400))
+        pygame.display.update()
+        pygame.time.wait(3000)
+        finished = True
 
     pygame.display.update()
 
